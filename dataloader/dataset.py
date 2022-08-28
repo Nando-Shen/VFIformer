@@ -259,3 +259,56 @@ class UFC101Dataset(Dataset):
 
         return sample
 
+class ATD12ksDataset(Dataset):
+    def __init__(self, args):
+        self.data_root = args.data_root
+        # self.data_root = '/home/liyinglu/newData/datasets/vfi/ucf101_interp_ours/'
+        self.load_data()
+
+    def __len__(self):
+        return len(self.data_list)
+
+    def load_data(self):
+        dirs = os.listdir(self.data_root)
+        data_list = []
+        for d in dirs:
+            img0 = os.path.join(self.data_root, d, 'frame1.jpg')
+            img1 = os.path.join(self.data_root, d, 'frame3.jpg')
+            gt = os.path.join(self.data_root, d, 'frame2.jpg')
+            data_list.append([img0, img1, gt, d])
+
+        self.data_list = data_list
+
+    def __getitem__(self, index):
+        img0 = cv2.imread(self.data_list[index][0])
+        img1 = cv2.imread(self.data_list[index][1])
+        gt = cv2.imread(self.data_list[index][2])
+
+        # pad HR to be mutiple of 64
+        h, w, c = gt.shape
+        if h % 64 != 0 or w % 64 != 0:
+            h_new = math.ceil(h / 64) * 64
+            w_new = math.ceil(w / 64) * 64
+            pad_t = (h_new - h) // 2
+            pad_d = (h_new - h) // 2 + (h_new - h) % 2
+            pad_l = (w_new - w) // 2
+            pad_r = (w_new - w) // 2 + (w_new - w) % 2
+            img0 = cv2.copyMakeBorder(img0.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)  # cv2.BORDER_REFLECT
+            img1 = cv2.copyMakeBorder(img1.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)
+        else:
+            pad_t, pad_d, pad_l, pad_r = 0, 0, 0, 0
+        pad_nums = [pad_t, pad_d, pad_l, pad_r]
+
+
+        img0 = torch.from_numpy(img0.astype('float32') / 255.).float().permute(2, 0, 1)
+        gt = torch.from_numpy(gt).permute(2, 0, 1)
+        # gt = torch.from_numpy(gt.astype('float32') / 255.).float().permute(2, 0, 1)
+        img1 = torch.from_numpy(img1.astype('float32') / 255.).float().permute(2, 0, 1)
+
+        sample = {'img0': img0,
+                  'img1': img1,
+                  'gt': gt,
+                  'pad_nums': pad_nums,
+                  'folder': self.data_list[index][3]}
+
+        return sample
