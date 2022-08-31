@@ -45,7 +45,7 @@ def main():
 
     ## network setting
     parser.add_argument('--net_name', default='VFIformer', type=str, help='RIFE')
-    parser.add_argument('--window_size', default=8, type=int)
+    parser.add_argument('--window_size', default=6, type=int)
 
     ## dataloader setting
     parser.add_argument('--data_root', default='/home/sharedir/videos/vimeo_triplet/',type=str)
