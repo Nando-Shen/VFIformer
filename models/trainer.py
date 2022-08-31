@@ -186,6 +186,7 @@ class Trainer(object):
                 img1 = batch_samples['img1']
                 gt = batch_samples['gt']
                 flow_gt = batch_samples['flow_gt']
+                # points = batch_samples['points']
 
                 ## forward
                 if not self.args.loss_l1:

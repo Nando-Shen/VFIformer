@@ -475,11 +475,11 @@ class VFIformerSmall(nn.Module):
                                           window_size=window_size, img_range=1.,
                                           depths=[[3, 3], [3, 3], [3, 3], [1, 1]],
                                           embed_dim=embed_dim, num_heads=[[2, 2], [2, 2], [2, 2], [2, 2]], mlp_ratio=2,
-                                          resi_connection='1conv',
-                                          use_crossattn=[[[False, False, False, False], [True, True, True, True]], \
-                                                      [[False, False, False, False], [True, True, True, True]], \
-                                                      [[False, False, False, False], [True, True, True, True]], \
-                                                      [[False, False, False, False], [False, False, False, False]]])
+                                          resi_connection='1conv')
+                                          # use_crossattn=[[[False, False, False, False], [True, True, True, True]], \
+                                          #             [[False, False, False, False], [True, True, True, True]], \
+                                          #             [[False, False, False, False], [True, True, True, True]], \
+                                          #             [[False, False, False, False], [False, False, False, False]]])
 
 
         self.apply(self._init_weights)
@@ -525,31 +525,46 @@ class VFIformerSmall(nn.Module):
         B, _, H, W = img0.size()
         imgs = torch.cat((img0, img1), 1)
 
-        if flow_pre is not None:
-            flow = flow_pre
-            _, c0, c1 = self.refinenet(img0, img1, flow)
+        # if flow_pre is not None:
+        #     flow = flow_pre
+        #     _, c0, c1 = self.refinenet(img0, img1, flow)
+        #
+        # else:
+        #     flow, flow_list = self.flownet(imgs)
+        #     flow, c0, c1 = self.refinenet(img0, img1, flow)
+        #
+        #
+        # warped_img0 = warp(img0, flow[:, :2])
+        # warped_img1 = warp(img1, flow[:, 2:])
+        #
+        # x = self.fuse_block(torch.cat([img0, img1, warped_img0, warped_img1], dim=1))
+        #
+        # refine_output = self.transformer(x, c0, c1)
+        # res = torch.sigmoid(refine_output[:, :3]) * 2 - 1
+        # mask = torch.sigmoid(refine_output[:, 3:4])
+        # merged_img = warped_img0 * mask + warped_img1 * (1 - mask)
+        # pred = merged_img + res
+        # pred = torch.clamp(pred, 0, 1)
+        #
+        # if self.phase == 'train':
+        #     return pred, flow_list
+        # else:
+        #     return pred, flow
 
-        else:
-            flow, flow_list = self.flownet(imgs)
-            flow, c0, c1 = self.refinenet(img0, img1, flow)
 
+        x = self.fuse_block(torch.cat([img0, img1], dim=1))
 
-        warped_img0 = warp(img0, flow[:, :2])
-        warped_img1 = warp(img1, flow[:, 2:])
-        
-        x = self.fuse_block(torch.cat([img0, img1, warped_img0, warped_img1], dim=1))
-
-        refine_output = self.transformer(x, c0, c1)
+        refine_output = self.transformer(x)
         res = torch.sigmoid(refine_output[:, :3]) * 2 - 1
         mask = torch.sigmoid(refine_output[:, 3:4])
-        merged_img = warped_img0 * mask + warped_img1 * (1 - mask)
+        merged_img = img0 * mask + img1 * (1 - mask)
         pred = merged_img + res
         pred = torch.clamp(pred, 0, 1)
 
         if self.phase == 'train':
-            return pred, flow_list
+            return pred
         else:
-            return pred, flow
+            return pred
 
 
 

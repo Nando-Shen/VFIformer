@@ -275,7 +275,8 @@ class ATD12ksDataset(Dataset):
             img0 = os.path.join(self.data_root, d, 'frame1.jpg')
             img1 = os.path.join(self.data_root, d, 'frame3.jpg')
             gt = os.path.join(self.data_root, d, 'frame2.jpg')
-            data_list.append([img0, img1, gt, d])
+            points = os.path.join(self.data_root, d, 'inter.jpg')
+            data_list.append([img0, img1, gt, points, d])
 
         self.data_list = data_list
 
@@ -283,6 +284,7 @@ class ATD12ksDataset(Dataset):
         img0 = cv2.imread(self.data_list[index][0])
         img1 = cv2.imread(self.data_list[index][1])
         gt = cv2.imread(self.data_list[index][2])
+        points = cv2.imread(self.data_list[index][3])
 
         # pad HR to be mutiple of 64
         h, w, c = gt.shape
@@ -295,6 +297,7 @@ class ATD12ksDataset(Dataset):
             pad_r = (w_new - w) // 2 + (w_new - w) % 2
             img0 = cv2.copyMakeBorder(img0.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)  # cv2.BORDER_REFLECT
             img1 = cv2.copyMakeBorder(img1.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)
+            points = cv2.copyMakeBorder(points.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)
         else:
             pad_t, pad_d, pad_l, pad_r = 0, 0, 0, 0
         pad_nums = [pad_t, pad_d, pad_l, pad_r]
@@ -304,10 +307,12 @@ class ATD12ksDataset(Dataset):
         gt = torch.from_numpy(gt).permute(2, 0, 1)
         # gt = torch.from_numpy(gt.astype('float32') / 255.).float().permute(2, 0, 1)
         img1 = torch.from_numpy(img1.astype('float32') / 255.).float().permute(2, 0, 1)
+        points = torch.from_numpy(points.astype('float32') / 255.).float().permute(2, 0, 1)
 
         sample = {'img0': img0,
                   'img1': img1,
                   'gt': gt,
+                  'points': points,
                   'pad_nums': pad_nums,
                   'folder': self.data_list[index][3]}
 
