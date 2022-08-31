@@ -297,6 +297,7 @@ class ATD12ksDataset(Dataset):
             pad_r = (w_new - w) // 2 + (w_new - w) % 2
             img0 = cv2.copyMakeBorder(img0.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)  # cv2.BORDER_REFLECT
             img1 = cv2.copyMakeBorder(img1.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)
+            gt = cv2.copyMakeBorder(gt.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)
             points = cv2.copyMakeBorder(points.copy(), pad_t, pad_d, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)
         else:
             pad_t, pad_d, pad_l, pad_r = 0, 0, 0, 0
