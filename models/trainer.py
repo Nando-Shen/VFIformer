@@ -185,7 +185,7 @@ class Trainer(object):
                 img0 = batch_samples['img0']
                 img1 = batch_samples['img1']
                 gt = batch_samples['gt']
-                flow_gt = batch_samples['flow_gt']
+                # flow_gt = batch_samples['flow_gt']
                 # points = batch_samples['points']
 
                 ## forward
@@ -204,17 +204,17 @@ class Trainer(object):
                     loss += l1_loss
                     log_info += 'l1_loss:%.06f ' % (l1_loss.item())
 
-                if self.args.loss_flow:
-                    flow_loss = 0
-                    for level in range(len(flow_list)):
-                        fscale = flow_list[level].size(-1) / flow_gt.size(-1)
-                        flow_gt_resize = F.interpolate(flow_gt, scale_factor=fscale, mode="bilinear",
-                                             align_corners=False) * fscale
-                        flow_loss += self.criterion_flow(flow_list[level][:, :2], flow_gt_resize[:, :2], 1).mean()
-                        flow_loss += self.criterion_flow(flow_list[level][:, 2:4], flow_gt_resize[:, 2:4], 1).mean()
-                    flow_loss = flow_loss / 2. * self.lambda_flow
-                    loss += flow_loss
-                    log_info += 'flow_loss:%.06f ' % (flow_loss.item())
+                # if self.args.loss_flow:
+                #     flow_loss = 0
+                #     for level in range(len(flow_list)):
+                #         fscale = flow_list[level].size(-1) / flow_gt.size(-1)
+                #         flow_gt_resize = F.interpolate(flow_gt, scale_factor=fscale, mode="bilinear",
+                #                              align_corners=False) * fscale
+                #         flow_loss += self.criterion_flow(flow_list[level][:, :2], flow_gt_resize[:, :2], 1).mean()
+                #         flow_loss += self.criterion_flow(flow_list[level][:, 2:4], flow_gt_resize[:, 2:4], 1).mean()
+                #     flow_loss = flow_loss / 2. * self.lambda_flow
+                #     loss += flow_loss
+                #     log_info += 'flow_loss:%.06f ' % (flow_loss.item())
 
                 if self.args.loss_ter:
                     ter_loss = self.criterion_ter(output, gt)
