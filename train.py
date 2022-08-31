@@ -49,8 +49,8 @@ def main():
 
     ## dataloader setting
     parser.add_argument('--data_root', default='/home/sharedir/videos/vimeo_triplet/',type=str)
-    parser.add_argument('--trainset', default='VimeoDataset', type=str, help='VimeoDataset')
-    parser.add_argument('--testset', default='VimeoDataset', type=str, help='VimeoDataset')
+    parser.add_argument('--trainset', default='ATD12ksDataset', type=str, help='VimeoDataset')
+    parser.add_argument('--testset', default='ATD12ksDataset', type=str, help='VimeoDataset')
     parser.add_argument('--save_test_root', default='generated', type=str)
     parser.add_argument('--crop_size', default=192, type=int)
     parser.add_argument('--batch_size', default=9, type=int)
