@@ -1,0 +1,1 @@
+rm vfi.pbs.o*
