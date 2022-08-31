@@ -262,8 +262,8 @@ class Trainer(object):
                                 tb_logger.add_scalar('l1_loss', l1_loss.item(), steps)
                             if self.args.loss_ter:
                                 tb_logger.add_scalar('ter_loss', ter_loss.item(), steps)
-                            if self.args.loss_flow:
-                                tb_logger.add_scalar('flow_loss', flow_loss.item(), steps)
+                            # if self.args.loss_flow:
+                            #     tb_logger.add_scalar('flow_loss', flow_loss.item(), steps)
                             if self.args.loss_perceptual:
                                 if i > 5:
                                     tb_logger.add_scalar('perceptual_loss', perceptual_loss.item(), steps)
