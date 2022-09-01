@@ -57,9 +57,6 @@ class Trainer(object):
 
         ## init network
         self.net = define_G(args)
-        model = self.net
-        total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-        print('the number of network parameters: {}'.format(total_params))
 
         if args.resume:
             self.load_networks('net', self.args.resume)
