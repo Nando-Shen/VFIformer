@@ -193,7 +193,7 @@ class Trainer(object):
                 if not self.args.loss_l1:
                     _, flow_list = self.net(torch.cat([img0, img1], 1))
                 else:
-                    output = self.net(img0, img1, None)
+                    output = self.net(img0, img1)
 
                 ## optimization
                 loss = 0
