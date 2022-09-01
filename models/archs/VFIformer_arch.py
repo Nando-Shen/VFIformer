@@ -457,8 +457,8 @@ class FlowRefineNet_Multis_Simple(nn.Module):
         # warp features by the updated flow
         c0 = [s_1[:bs], s_2[:bs], s_3[:bs], s_4[:bs]]
         c1 = [s_1[bs:], s_2[bs:], s_3[bs:], s_4[bs:]]
-        out0 = self.warp_fea(c0, points)
-        out1 = self.warp_fea(c1, points)
+        out0 = self.warp_fea(c0, points[:, :2])
+        out1 = self.warp_fea(c1, points[:, 2:4])
 
         return out0, out1
 
