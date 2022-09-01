@@ -13,5 +13,5 @@ module load cuda/10.2.89
 python train.py --gpu_ids 0,1\
     --loss_l1 --loss_ter --loss_flow --use_tb_logger \
     --batch_size 2 --net_name VFIformerSmall --name train_VFIformerSmall --max_iter 300 \
-    --crop_size 72 --save_epoch_freq 5  \
+    --crop_size 128 --save_epoch_freq 5  \
     --data_root /project/VUR/jshe2377/atd12k_points/train_10k --window_size=6
