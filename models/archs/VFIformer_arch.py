@@ -452,6 +452,8 @@ class FlowRefineNet_Multis_Simple(nn.Module):
         s_3 = self.conv3(s_2)  # 1/4
         s_4 = self.conv4(s_3)  # 1/8
 
+        points = F.interpolate(points, scale_factor=2., mode="bilinear", align_corners=False) * 2.
+
         # warp features by the updated flow
         c0 = [s_1[:bs], s_2[:bs], s_3[:bs], s_4[:bs]]
         c1 = [s_1[bs:], s_2[bs:], s_3[bs:], s_4[bs:]]
