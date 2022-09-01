@@ -187,13 +187,13 @@ class Trainer(object):
                 img1 = batch_samples['img1']
                 gt = batch_samples['gt']
                 # flow_gt = batch_samples['flow_gt']
-                # points = batch_samples['points']
+                points = batch_samples['points']
 
                 ## forward
                 if not self.args.loss_l1:
                     _, flow_list = self.net(torch.cat([img0, img1], 1))
                 else:
-                    output = self.net(img0, img1)
+                    output = self.net(img0, img1, points)
 
                 ## optimization
                 loss = 0

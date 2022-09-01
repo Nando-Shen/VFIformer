@@ -443,7 +443,7 @@ class FlowRefineNet_Multis_Simple(nn.Module):
     #
     #     return flow, out0, out1
 
-    def forward(self, x0, x1):
+    def forward(self, x0, x1, points):
         bs = x0.size(0)
 
         inp = torch.cat([x0, x1], dim=0)
@@ -455,10 +455,10 @@ class FlowRefineNet_Multis_Simple(nn.Module):
         # warp features by the updated flow
         c0 = [s_1[:bs], s_2[:bs], s_3[:bs], s_4[:bs]]
         c1 = [s_1[bs:], s_2[bs:], s_3[bs:], s_4[bs:]]
-        # out0 = self.warp_fea(c0, flow[:, :2])
-        # out1 = self.warp_fea(c1, flow[:, 2:4])
+        out0 = self.warp_fea(c0, points)
+        out1 = self.warp_fea(c1, points)
 
-        return c0, c1
+        return out0, out1
 
     def warp_fea(self, feas, flow):
         outs = []
@@ -538,7 +538,7 @@ class VFIformerSmall(nn.Module):
     #
     #     return flow
 
-    def forward(self, img0, img1):
+    def forward(self, img0, img1, points):
         B, _, H, W = img0.size()
         # imgs = torch.cat((img0, img1), 1)
 
@@ -568,8 +568,9 @@ class VFIformerSmall(nn.Module):
         # else:
         #     return pred, flow
 
-        c0, c1 = self.refinenet(img0, img1)
-        x = self.fuse_block(torch.cat([img0, img1], dim=1))
+        c0, c1 = self.refinenet(img0, img1, points)
+
+        x = self.fuse_block(torch.cat([img0, img1, points], dim=1))
 
         refine_output = self.transformer(x, c0, c1)
         res = torch.sigmoid(refine_output[:, :3]) * 2 - 1
