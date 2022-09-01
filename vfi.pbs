@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -P VUR
 #PBS -l select=1:ncpus=4:ngpus=2:mem=16GB
-#PBS -l walltime=00:02:00
+#PBS -l walltime=12:00:00
 #PBS -j oe
 
 cd /home/jshe2377/VFIformer
@@ -10,8 +10,8 @@ module load python/3.8.2 magma/2.5.3 openmpi-gcc/3.1.5
 source /home/jshe2377/NeuS/neus/bin/activate
 module load cuda/10.2.89
 
-python train.py --gpu_ids 0,1\
+python -m torch.distributed.launch --nproc_per_node=3 --master_port=4175 train.py --launcher pytorch --gpu_ids 0,1\
     --loss_l1 --loss_ter --use_tb_logger \
-    --batch_size 2 --net_name VFIformerSmall --name train_VFIformerSmall --max_iter 300 \
-    --crop_size 128 --save_epoch_freq 5  \
+    --batch_size 6 --net_name VFIformerSmall --name train_VFIformerSmall --max_iter 10 \
+    --crop_size 120 --save_epoch_freq 5  \
     --data_root /project/VUR/jshe2377/atd12k_points/train_10k --window_size=6
