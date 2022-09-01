@@ -126,6 +126,7 @@ def main():
         args.dist = True
         init_dist()
         args.world_size = torch.distributed.get_world_size()
+        print(args.world_size)
         args.rank = torch.distributed.get_rank()
 
     args.save_folder = os.path.join(args.save_folder, args.name)
