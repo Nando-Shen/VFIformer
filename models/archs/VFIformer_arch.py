@@ -481,7 +481,7 @@ class VFIformerSmall(nn.Module):
         window_size = 4
         embed_dim = 136
 
-        self.flownet = IFNet()
+        # self.flownet = IFNet()
         self.refinenet = FlowRefineNet_Multis_Simple(c=c, n_iters=1)
         self.fuse_block = nn.Sequential(nn.Conv2d(6, 2*c, 3, 1, 1),
                                          nn.LeakyReLU(negative_slope=0.2, inplace=True),
@@ -531,16 +531,16 @@ class VFIformerSmall(nn.Module):
             nn.init.constant_(m.bias, 0)
             nn.init.constant_(m.weight, 1.0)
 
-    def get_flow(self, img0, img1):
-        imgs = torch.cat((img0, img1), 1)
-        flow, flow_list = self.flownet(imgs)
-        flow, c0, c1 = self.refinenet(img0, img1, flow)
-
-        return flow
+    # def get_flow(self, img0, img1):
+    #     imgs = torch.cat((img0, img1), 1)
+    #     flow, flow_list = self.flownet(imgs)
+    #     flow, c0, c1 = self.refinenet(img0, img1, flow)
+    #
+    #     return flow
 
     def forward(self, img0, img1):
         B, _, H, W = img0.size()
-        imgs = torch.cat((img0, img1), 1)
+        # imgs = torch.cat((img0, img1), 1)
 
         # if flow_pre is not None:
         #     flow = flow_pre
